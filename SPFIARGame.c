@@ -2,7 +2,7 @@
  * SPFIARGame.c
  *
  *  Created on: 28 במאי 2017
- *      Author: uri
+ *      Author: uri and maya
  */
 
 #include <stdio.h>
