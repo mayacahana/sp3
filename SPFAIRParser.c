@@ -39,7 +39,7 @@ SPCommand spParserPraseLine(char* str) {
 	word = strtok(str, delim);
 	while(word != NULL) {
 
-		if(strcmp(word, "") == 0)
+		if(strcmp(word, "") == 0 || strcmp(word, " ") == 0)
 			continue;
 		else {
 			if(seencmd == false) {
