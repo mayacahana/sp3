@@ -33,6 +33,8 @@ typedef struct sp_fiar_game_t {
 	char gameBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS];
 	int tops[SP_FIAR_GAME_N_COLUMNS];
 	char currentPlayer;
+	SPArrayList* movesPlayer1;
+	SPArrayList* movesPlayer2;
 	//You May add any fields you like
 } SPFiarGame;
 
