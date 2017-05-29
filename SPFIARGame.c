@@ -157,7 +157,6 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	if (!src)
 		return SP_FIAR_GAME_INVALID_ARGUMENT;
-	//TODO:check if we exceeded historysize
 
 	if ((src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL
 			&& spArrayListIsEmpty(src->movesPlayer1))
