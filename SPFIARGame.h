@@ -159,4 +159,9 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 */
 char spFiarCheckWinner(SPFiarGame* src);
 
+//the function checks if the game is over, i.e the game board is full
+bool spFiarCheckOver(SPFiarGame* src);
+
+
+
 #endif

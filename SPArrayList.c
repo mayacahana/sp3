@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "SPArrayList.h"
+#include <stdlib.h>
 
 SPArrayList* spArrayListCreate(int maxSize) {
 	if (maxSize <= 0)
@@ -52,10 +54,6 @@ SPArrayList* spArrayListCopy(SPArrayList* src) {
 		return NULL;
 
 	copy->maxSize = src->maxSize;
-	if (copy->maxSize == NULL) {
-		free(copy);
-		return NULL;
-	}
 
 	copy->actualSize = src->actualSize;
 	if (copy->actualSize == NULL) {

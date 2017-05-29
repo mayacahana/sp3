@@ -185,7 +185,17 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	if (!src)
 		return SP_FIAR_GAME_INVALID_ARGUMENT;
 
-	//print the board
+	for (int i = SP_FIAR_GAME_N_ROWS - 1; i >= 0; i--) {
+		printf("| ");
+		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++)
+			printf("%c ", src->gameBoard[i][j]);
+		printf("|\n");
+	}
+	printf("-----------------\n");
+	printf("  1 2 3 4 5 6 7  \n");
+
+	return SP_FIAR_GAME_SUCCESS;
+
 }
 
 char spFiarGameGetCurrentPlayer(SPFiarGame* src) {
@@ -200,5 +210,62 @@ char spFiarCheckWinner(SPFiarGame* src) {
 	if (!src)
 		return NULL;
 
+	//vertical check
+	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
+		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
+			if ((src->gameBoard[i][j] == src->gameBoard[i + 1][j]
+					== src->gameBoard[i + 2][j] == src->gameBoard[i + 3][j])
+					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
+				return src->gameBoard[i][j]; //return the right symbol according to the winner
+		}
+	}
+
+	//horizonal check
+	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
+		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
+			if ((src->gameBoard[i][j] == src->gameBoard[i][j + 1]
+					== src->gameBoard[i][j + 2] == src->gameBoard[i][j + 3])
+					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
+				return src->gameBoard[i][j]; //return the right symbol according to the winner
+		}
+	}
+
+	//diagonal check - ascending
+	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
+		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
+			if ((src->gameBoard[i][j] == src->gameBoard[i + 1][j + 1]
+					== src->gameBoard[i + 2][j + 2]
+					== src->gameBoard[i + 3][j + 3])
+					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
+				return src->gameBoard[i][j]; //return the right symbol according to the winner
+		}
+	}
+	//diagonal check - descending
+	for (int i = 3; i < SP_FIAR_GAME_N_ROWS; i++) {
+		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
+			if ((src->gameBoard[i][j] == src->gameBoard[i - 1][j + 1]
+					== src->gameBoard[i - 2][j + 2]
+					== src->gameBoard[i - 3][j + 3])
+					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
+				return src->gameBoard[i][j]; //return the right symbol according to the winner
+		}
+	}
+
+	if(spFiarCheckOver(src))
+		return SP_FIAR_GAME_TIE_SYMBOL;
+	return NULL;
 }
+
+bool spFiarCheckOver(SPFiarGame* src) {
+	if(!src)
+		return false;
+
+	for(int i=0; i<SP_FIAR_GAME_N_COLUMNS; i++) {
+		if(src->tops[i] < SP_FIAR_GAME_N_ROWS)
+			return false;
+	}
+
+	return true;
+}
+
 
