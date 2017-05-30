@@ -2,7 +2,6 @@
 #define SPFIARGAME_H_
 #include <stdbool.h>
 #include "SPArrayList.h"
-
 /**
  * SPFIARGame Summary:
  *
@@ -159,7 +158,7 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 */
 char spFiarCheckWinner(SPFiarGame* src);
 
-//the function checks if the game is over, i.e the game board is full
+//my function, the function checks if the game is over, i.e the game board is full
 bool spFiarCheckOver(SPFiarGame* src);
 
 

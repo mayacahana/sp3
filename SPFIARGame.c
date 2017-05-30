@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "SPArrayList.h"
+#include <stdlib.h>
+#include "SPFIARGame.h"
 
 //Definitions
 #define SP_FIAR_GAME_SPAN 4
@@ -48,6 +49,8 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 
 	if (!res->movesPlayer1 || !res->movesPlayer2)
 		return NULL;
+
+	return res;
 }
 
 SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
@@ -58,47 +61,23 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 	if (!res)
 		return NULL;
 
-	//copy gameboard
-	char gameboard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS];
-
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++)
-			gameboard[i][j] = src->gameBoard[i][j];
-
-	}
-	res->gameBoard = gameboard;
-	if (res->gameBoard == NULL) {
-		free(res);
-		return NULL;
+			res->gameBoard[i][j] = src->gameBoard[i][j];
 	}
 
 	//copy tops
-	int tops[SP_FIAR_GAME_N_COLUMNS];
 	for (int i = 0; i < SP_FIAR_GAME_N_COLUMNS; i++)
-		tops[i] = src->tops[i];
-
-	res->tops = tops;
-	if (res->tops == NULL) {
-		free(res->gameBoard);
-		free(res);
-		return NULL;
-	}
+		res->tops[i] = src->tops[i];
 
 	//copy currentPlayer
 	res->currentPlayer = src->currentPlayer;
-	if (res->currentPlayer == NULL) {
-		free(res->gameBoard);
-		free(res->tops);
-		free(res);
-		return NULL;
-	}
 
 	//copy movesPlayer
 	res->movesPlayer1 = spArrayListCopy(src->movesPlayer1);
 	if (res->movesPlayer1 == NULL) {
 		free(res->gameBoard);
 		free(res->tops);
-		free(res->currentPlayer);
 		free(res);
 		return NULL;
 	}
@@ -106,7 +85,6 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 	if (res->movesPlayer2 == NULL) {
 		free(res->gameBoard);
 		free(res->tops);
-		free(res->currentPlayer);
 		free(res);
 		return NULL;
 	}
@@ -120,7 +98,6 @@ void spFiarGameDestroy(SPFiarGame* src) {
 
 	free(src->movesPlayer1);
 	free(src->movesPlayer2);
-	free(src->currentPlayer);
 	free(src->tops);
 	free(src->gameBoard);
 	free(src);
@@ -208,7 +185,7 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src) {
 
 char spFiarCheckWinner(SPFiarGame* src) {
 	if (!src)
-		return NULL;
+		return '\0';
 
 	//vertical check
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
@@ -251,20 +228,19 @@ char spFiarCheckWinner(SPFiarGame* src) {
 		}
 	}
 
-	if(spFiarCheckOver(src))
+	if (spFiarCheckOver(src))
 		return SP_FIAR_GAME_TIE_SYMBOL;
-	return NULL;
+	return '\0';
 }
 
 bool spFiarCheckOver(SPFiarGame* src) {
-	if(!src)
+	if (!src)
 		return false;
 
-	for(int i=0; i<SP_FIAR_GAME_N_COLUMNS; i++) {
-		if(src->tops[i] < SP_FIAR_GAME_N_ROWS)
+	for (int i = 0; i < SP_FIAR_GAME_N_COLUMNS; i++) {
+		if (src->tops[i] < SP_FIAR_GAME_N_ROWS)
 			return false;
 	}
-
 	return true;
 }
 

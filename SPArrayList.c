@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "SPArrayList.h"
 #include <stdlib.h>
+#include "SPArrayList.h"
 
 SPArrayList* spArrayListCreate(int maxSize) {
 	if (maxSize <= 0)
@@ -19,29 +19,15 @@ SPArrayList* spArrayListCreate(int maxSize) {
 	if (!res)
 		return NULL;
 
-	int max = maxSize;
-	int actualSize = 0;
-
 	res->elements = malloc(sizeof(int)*maxSize);;
 	if (res->elements == NULL) {
 		free(res);
 		return NULL;
 	}
 
-	res->maxSize = max;
-	if (res->maxSize == NULL) {
-		free(res->elements);
-		free(res);
-		return NULL;
-	}
-
+	res->maxSize = maxSize;
 	res->actualSize = 0;
-	if (res->actualSize == NULL) {
-		free(res->elements);
-		free(res->maxSize);
-		free(res);
-		return NULL;
-	}
+
 	return res;
 }
 
@@ -54,28 +40,17 @@ SPArrayList* spArrayListCopy(SPArrayList* src) {
 		return NULL;
 
 	copy->maxSize = src->maxSize;
-
 	copy->actualSize = src->actualSize;
-	if (copy->actualSize == NULL) {
-		free(copy->maxSize);
+
+	copy->elements = malloc(sizeof(int) * src->maxSize);
+	if(copy->elements == NULL) {
 		free(copy);
 		return NULL;
 	}
-
-	int* elements = malloc(sizeof(int) * src->maxSize);
-	if (!elements)
-		return NULL;
 
 	for (int i = 0; i < copy->actualSize; i++)
-		elements[i] = src->elements[i];
+		copy->elements[i] = src->elements[i];
 
-	copy->elements = elements;
-	if (copy->elements == NULL) {
-		free(copy->actualSize);
-		free(copy->maxSize);
-		free(copy);
-		return NULL;
-	}
 	return copy;
 }
 
@@ -84,8 +59,6 @@ void spArrayListDestroy(SPArrayList* src) {
 		return;
 
 	free(src->elements);
-	free(src->maxSize);
-	free(src->actualSize);
 	free(src);
 	return;
 }
@@ -95,7 +68,6 @@ SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src) {
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 
 	src->actualSize = 0;
-	//TODO: clear elements ?
 	//maxSize not affected
 	return SP_ARRAY_LIST_SUCCESS;
 }
@@ -134,7 +106,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 	for (int i = index; i < src->actualSize - 1; i++) {
 		src->elements[i] = src->elements[i + 1];
 	}
-	src->actualSize = src->actualSize-1;
+	src->actualSize = src->actualSize - 1;
 	return SP_ARRAY_LIST_SUCCESS;
 }
 
@@ -150,7 +122,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
 
 int spArrayListGetAt(SPArrayList* src, int index) {
 	if (!src || index < 0 || index > src->actualSize - 1)
-		return NULL;
+		return -1;
 
 	return src->elements[index];
 }
@@ -161,20 +133,20 @@ int spArrayListGetFirst(SPArrayList* src) {
 
 int spArrayListGetLast(SPArrayList* src) {
 	if (!src)
-		return NULL;
+		return -1;
 	return spArrayListGetAt(src, src->actualSize - 1);
 }
 
 int spArrayListMaxCapacity(SPArrayList* src) {
 	if (!src)
-		return NULL;
+		return -1;
 
 	return src->maxSize;
 }
 
 int spArrayListSize(SPArrayList* src) {
 	if (!src)
-		return NULL;
+		return -1;
 
 	return src->actualSize;
 }
