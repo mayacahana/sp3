@@ -19,7 +19,7 @@ SPArrayList* spArrayListCreate(int maxSize) {
 	if (!res)
 		return NULL;
 
-	res->elements = malloc(sizeof(int)*maxSize);;
+	res->elements = malloc(sizeof(int)*maxSize);
 	if (res->elements == NULL) {
 		free(res);
 		return NULL;
@@ -73,14 +73,15 @@ SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
-	if (!src || index < 0 || index > src->actualSize - 1)
+	if (!src || index < 0 || index > src->maxSize - 1) {
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
+	}
 
-	if (src->actualSize + 1 >= src->maxSize)
+	if (src->actualSize >= src->maxSize)
 		return SP_ARRAY_LIST_FULL;
 
 	//shift elements to the right, to make space for the new elem
-	for (int i = src->actualSize + 1; i > index; i--)
+	for (int i = src->actualSize; i > index; i--)
 		src->elements[i] = src->elements[i - 1];
 
 	src->elements[index] = elem;
@@ -93,16 +94,19 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddFirst(SPArrayList* src, int elem) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
-	return spArrayListAddAt(src, elem, src->actualSize - 1);
+	if(!src)
+		return SP_ARRAY_LIST_INVALID_ARGUMENT;
+	return spArrayListAddAt(src, elem, src->actualSize);
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
-	if (!src || index < 0 || index > src->actualSize - 1)
+	if (!src || index < 0 || index > src->maxSize - 1)
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 
 	if (src->actualSize == 0)
-		return SP_ARRAY_LIST_FULL;
+		return SP_ARRAY_LIST_EMPTY;
 
+	//shift elements to the left, to overwrite the specified elem
 	for (int i = index; i < src->actualSize - 1; i++) {
 		src->elements[i] = src->elements[i + 1];
 	}
@@ -121,7 +125,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
 }
 
 int spArrayListGetAt(SPArrayList* src, int index) {
-	if (!src || index < 0 || index > src->actualSize - 1)
+	if (!src || index < 0 || index > src->maxSize - 1)
 		return -1;
 
 	return src->elements[index];

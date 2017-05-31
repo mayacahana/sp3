@@ -3,5 +3,4 @@
 
 //put auxiliary functions and constants used by the main function here.
 
-
 #endif

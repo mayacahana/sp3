@@ -76,15 +76,15 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 	//copy movesPlayer
 	res->movesPlayer1 = spArrayListCopy(src->movesPlayer1);
 	if (res->movesPlayer1 == NULL) {
-		free(res->gameBoard);
-		free(res->tops);
+		//free(res->gameBoard);
+		//free(res->tops);
 		free(res);
 		return NULL;
 	}
 	res->movesPlayer2 = spArrayListCopy(src->movesPlayer2);
 	if (res->movesPlayer2 == NULL) {
-		free(res->gameBoard);
-		free(res->tops);
+		//free(res->gameBoard);
+		//free(res->tops);
 		free(res);
 		return NULL;
 	}
@@ -96,10 +96,10 @@ void spFiarGameDestroy(SPFiarGame* src) {
 	if (!src)
 		return;
 
-	free(src->movesPlayer1);
-	free(src->movesPlayer2);
-	free(src->tops);
-	free(src->gameBoard);
+	spArrayListDestroy(src->movesPlayer1);
+	spArrayListDestroy(src->movesPlayer2);
+	//free(src->tops);
+	//free(src->gameBoard);
 	free(src);
 
 	return;
@@ -114,11 +114,22 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 
 	src->tops[col] = src->tops[col] + 1;
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
-		spArrayListAddLast(src->movesPlayer1, col);
-	} else
-		//currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL
-		spArrayListAddLast(src->movesPlayer2, col);
+		int msg = spArrayListAddFirst(src->movesPlayer1, col);
+		if (msg == SP_ARRAY_LIST_FULL) {
+			// the list is full, make room by removing last elem
+			spArrayListRemoveLast(src->movesPlayer1);
+			spArrayListAddFirst(src->movesPlayer1, col);
+		}
 
+	} else { //currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL
+		//spArrayListAddLast(src->movesPlayer2, col);
+		int msg = spArrayListAddFirst(src->movesPlayer2, col);
+		if (msg == SP_ARRAY_LIST_FULL) {
+			// the list is full, make room by removing last elem
+			spArrayListRemoveLast(src->movesPlayer2);
+			spArrayListAddFirst(src->movesPlayer2, col);
+		}
+	}
 	src->gameBoard[src->tops[col] - 1][col] = src->currentPlayer;
 
 	return SP_FIAR_GAME_SUCCESS;
@@ -138,21 +149,24 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	if ((src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL
 			&& spArrayListIsEmpty(src->movesPlayer1))
 			|| (src->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL
-					&& spArrayListIsEmpty(src->movesPlayer2)))
+					&& spArrayListIsEmpty(src->movesPlayer2))) {
 		return SP_FIAR_GAME_NO_HISTORY;
-
+	}
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
-		int col = spArrayListGetLast(src->movesPlayer1);
-		spArrayListRemoveLast(src->movesPlayer1);
-		src->tops[col] = src->tops[col]--;
-		src->gameBoard[src->tops[col]][col] = src->currentPlayer;
-		src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
+
+		int col = spArrayListGetFirst(src->movesPlayer1);
+		//int col = spArrayListRemoveLast(src->movesPlayer1);
+		spArrayListRemoveFirst(src->movesPlayer1);
+		//spArrayListRemoveLast(src->movesPlayer1);
+		src->tops[col] = src->tops[col] - 1;
+		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
+		//src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
 	} else {
-		int col = spArrayListGetLast(src->movesPlayer2);
-		spArrayListRemoveLast(src->movesPlayer2);
-		src->tops[col] = src->tops[col]--;
-		src->gameBoard[src->tops[col]][col] = src->currentPlayer;
-		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+		int col = spArrayListGetFirst(src->movesPlayer2);
+		spArrayListRemoveFirst(src->movesPlayer2);
+		src->tops[col] = src->tops[col] - 1;;
+		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
+		//src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 
 	}
 	return SP_FIAR_GAME_SUCCESS;
@@ -243,5 +257,4 @@ bool spFiarCheckOver(SPFiarGame* src) {
 	}
 	return true;
 }
-
 

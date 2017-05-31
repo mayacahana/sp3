@@ -1,5 +1,5 @@
 /*
-§ * SPFAIRParser.c
+ § * SPFAIRParser.c
  *
  *  Created on: 23 במאי 2017
  *      Author: uri
@@ -15,31 +15,32 @@
 bool spParserIsInt(const char* str) {
 
 	if (*str == '-') // handle negative number
-		str++;
+		++str;
 	if (!*str) // handle empty string
 		return false;
 
 	while (*str) {
-		if (*str >= '0' && *str <= '9') // the i-th char is not a valid digit
+		if (!isdigit(*str)) // the i-th char is not a valid digit
 			return false;
 		else
-			str++;
+			++str;
 	}
 	return true;
 }
 
-SPCommand spParserPraseLine(char* str) {
+SPCommand spParserPraseLine(const char* str) {
 
-	SPCommand res ;
+	char *strcopy = (char*) malloc(strlen(str) + 1);
+	strcpy(strcopy, str);
 
+	SPCommand res;
 	res.cmd = SP_INVALID_LINE;
 	res.validArg = false;
 
 	bool seencmd = false, seenadd = false;
-	char *word, *delim = " \t\r\n";
-	word = strtok(str, delim);
+	char *word;
+	word = strtok(strcopy, " \t\r\n");
 	while (word != NULL) {
-
 		if (strcmp(word, "") != 0) {
 			if (seencmd == false) {
 				seencmd = true;
@@ -48,31 +49,30 @@ SPCommand spParserPraseLine(char* str) {
 					res.cmd = arg;
 					res.validArg = false;
 					break;
-				} else if (arg == 2)  //add disk
+				} else if (arg == 1) { //add disk
 					seenadd = true;
-				else { //other commands
+				} else { //other commands
 					res.cmd = arg;
 					res.validArg = false;
 				}
-
 			} else if (seenadd == true && spParserIsInt(word) == true) {
 				int val = atoi(word);
-				if (val >= 1 && val <= 7) {
+				if (val >= 1 && val <= 17) {
 					res.cmd = SP_ADD_DISC;
 					res.validArg = true;
 					res.arg = val;
 				} else {
 					res.cmd = SP_INVALID_LINE;
 					res.validArg = false;
-					break; // (?)
+					break;
 				}
 			} else {
 				res.cmd = SP_INVALID_LINE;
 				res.validArg = false;
-				break; // (?)
+				break;
 			}
 		}
-		word = strtok(NULL, delim);
+		word = strtok(NULL, " \t\r\n");
 	}
 	return res;
 }
@@ -80,16 +80,12 @@ SPCommand spParserPraseLine(char* str) {
 int spParserCommand(char* str) {
 
 	//create a copy
-	char *strcopy = NULL;
-	strcopy = strcpy(strcopy, str);
-
-	//convert to lower case
-	for (; *strcopy; ++strcopy)
-		*strcopy = tolower(*strcopy);
+	char *strcopy = (char*) malloc(strlen(str) + 1);
+	strcpy(strcopy, str);
 
 	if (strcmp(strcopy, "undo_move") == 0)
 		return SP_UNDO_MOVE;
-	if (strcmp(strcopy, "add_disk") == 0)
+	if (strcmp(strcopy, "add_disc") == 0)
 		return SP_ADD_DISC;
 	if (strcmp(strcopy, "suggest_move") == 0)
 		return SP_SUGGEST_MOVE;
