@@ -120,15 +120,15 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 			spArrayListRemoveLast(src->movesPlayer1);
 			spArrayListAddFirst(src->movesPlayer1, col);
 		}
-
+		//TODO: change turn ?
 	} else { //currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL
-		//spArrayListAddLast(src->movesPlayer2, col);
 		int msg = spArrayListAddFirst(src->movesPlayer2, col);
 		if (msg == SP_ARRAY_LIST_FULL) {
 			// the list is full, make room by removing last elem
 			spArrayListRemoveLast(src->movesPlayer2);
 			spArrayListAddFirst(src->movesPlayer2, col);
 		}
+		// TODO: change turn ?
 	}
 	src->gameBoard[src->tops[col] - 1][col] = src->currentPlayer;
 
@@ -160,13 +160,14 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 		//spArrayListRemoveLast(src->movesPlayer1);
 		src->tops[col] = src->tops[col] - 1;
 		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
-		//src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
+		src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
 	} else {
 		int col = spArrayListGetFirst(src->movesPlayer2);
 		spArrayListRemoveFirst(src->movesPlayer2);
-		src->tops[col] = src->tops[col] - 1;;
+		src->tops[col] = src->tops[col] - 1;
+		;
 		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
-		//src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 
 	}
 	return SP_FIAR_GAME_SUCCESS;
@@ -257,4 +258,15 @@ bool spFiarCheckOver(SPFiarGame* src) {
 	}
 	return true;
 }
+
+void changePlayer(SPFiarGame* src){
+	if(!src)
+		return;
+
+	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL)
+		src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
+	else
+		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+}
+
 

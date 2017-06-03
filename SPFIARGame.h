@@ -161,6 +161,7 @@ char spFiarCheckWinner(SPFiarGame* src);
 //my function, the function checks if the game is over, i.e the game board is full
 bool spFiarCheckOver(SPFiarGame* src);
 
-
+//my functions, change player turn
+void changePlayer(SPFiarGame* src);
 
 #endif

@@ -57,7 +57,7 @@ SPCommand spParserPraseLine(const char* str) {
 				}
 			} else if (seenadd == true && spParserIsInt(word) == true) {
 				int val = atoi(word);
-				if (val >= 1 && val <= 17) {
+				if (val >= 1 && val <= 7) {
 					res.cmd = SP_ADD_DISC;
 					res.validArg = true;
 					res.arg = val;

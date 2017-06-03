@@ -4,6 +4,26 @@
 
 //Put all decleartions and constants here
 
-int getNumericSymbol(SPFiarGame* src, int i, int j);
+typedef struct sp_mini_max_node_t {
+	SPFiarGame* game;
+	int value;
+} SPMiniMaxNode;
+
+//SPMiniMaxNode functions
+SPMiniMaxNode* spMiniMaxNodeCreate(int historySize);
+
+void spMiniMaxNodeDestroy(SPMiniMaxNode* src);
+
+
+int scoringFunc(SPFiarGame* src);
+
+int getNumericValue(char currentPlayer, char symbol);
+
+int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag);
+
+int decider(int value, int curr, bool flag);
+
+
+
 
 #endif
