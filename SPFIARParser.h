@@ -47,7 +47,9 @@ bool spParserIsInt(const char* str);
  */
 SPCommand spParserPraseLine(const char* str);
 
-//my function - Parser a command
+/*
+ * My Function - Parses a command
+*/
 int spParserCommand(char* str);
 
 #endif

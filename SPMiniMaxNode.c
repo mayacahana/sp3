@@ -5,7 +5,6 @@
  *      Author: uri
  */
 #include "SPMiniMaxNode.h"
-#include "SPFIARGame.h"
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -20,7 +19,7 @@ SPMiniMaxNode* spMiniMaxNodeCreate(SPFiarGame* src) {
 		return NULL;
 
 	res->value = 0;
-	res->game = SPFIARGameCopy(src);
+	res->game = spFiarGameCopy(src);
 	if (res->game == NULL) {
 		free(res);
 		return NULL;
@@ -53,9 +52,12 @@ int scoringFunc(SPFiarGame* src) {
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 1][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 2][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 3][j]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i + 1][j]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i + 2][j]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i + 3][j]);
 			if (tmp == 4) {
 				score = INT_MAX;
 				return score;
@@ -74,9 +76,12 @@ int scoringFunc(SPFiarGame* src) {
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j + 1]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j + 2]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j + 3]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i][j + 1]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i][j + 2]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer, src->gameBoard[i][j + 3]);
 			if (tmp == 4) {
 				score = INT_MAX;
 				return score;
@@ -95,9 +100,15 @@ int scoringFunc(SPFiarGame* src) {
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 1][j + 1]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 2][j + 2]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 3][j + 3]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i + 1][j + 1]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i + 2][j + 2]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i + 3][j + 3]);
 			if (tmp == 4) {
 				score = INT_MAX;
 				return score;
@@ -115,9 +126,15 @@ int scoringFunc(SPFiarGame* src) {
 	for (int i = 3; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i - 1][j + 1]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i - 2][j + 2]);
-			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i - 3][j + 3]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i - 1][j + 1]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i - 2][j + 2]);
+			tmp = tmp
+					+ getNumericValue(currentPlayer,
+							src->gameBoard[i - 3][j + 3]);
 			if (tmp == 4) {
 				score = INT_MAX;
 				return score;
@@ -139,26 +156,27 @@ int scoringFunc(SPFiarGame* src) {
 }
 
 int getNumericValue(char currentPlayer, char symbol) {
+
 	if (symbol == currentPlayer)
 		return 1;
 	if (symbol == SP_FIAR_GAME_EMPTY_ENTRY)
 		return 0;
-	//the symbol is the opposite symbol
+	//the symbol is the opposite from the current player symbol
 	return -1;
 }
 
 int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag) {
 
 	//recursion halt
-	if (maxRecLvl == 0)
+	if (maxRecLvl == 0 || spFiarCheckOver(src))
 		return scoringFunc(src);
 
-	//TODO: check
-	int value =  spFiarCheckOver(src) ? scoringFunc(src) : ((flag) ? INT_MIN : INT_MAX);
-	for (int col = 0; col < 7; col++) {
+	int value = (flag) ? INT_MIN + 1 : INT_MAX - 1;
+	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(src, col)) {
 			spFiarGameSetMove(src, col);
-			value = decider(value, computeValueRec(src, maxRecLvl - 1, !flag), flag);
+			value = decider(value, computeValueRec(src, maxRecLvl - 1, !flag),
+					flag);
 			spFiarGameUndoPrevMove(src);
 		} else
 			continue;
@@ -173,5 +191,4 @@ int decider(int value, int curr, bool flag) {
 	else
 		return MIN(value, curr);
 }
-
 

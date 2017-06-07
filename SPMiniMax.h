@@ -4,7 +4,6 @@
 #include "SPFIARGame.h"
 #include "SPMiniMaxNode.h"
 
-
 /**
  * Given a game state, this function evaluates the best move according to
  * the current player. The function initiates a MiniMax algorithm up to a

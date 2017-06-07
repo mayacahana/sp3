@@ -10,10 +10,9 @@ typedef struct sp_mini_max_node_t {
 } SPMiniMaxNode;
 
 //SPMiniMaxNode functions
-SPMiniMaxNode* spMiniMaxNodeCreate(int historySize);
+SPMiniMaxNode* spMiniMaxNodeCreate(SPFiarGame* src);
 
 void spMiniMaxNodeDestroy(SPMiniMaxNode* src);
-
 
 int scoringFunc(SPFiarGame* src);
 

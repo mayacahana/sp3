@@ -15,25 +15,29 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	if (!copy)
 		return -1;
 
-	SPMiniMaxNode* node = SPMiniMaxNodeCreate(currentGame);
+	SPMiniMaxNode* node = spMiniMaxNodeCreate(copy);
 	if(!node)
 		return -1;
 
+	if(spFiarCheckOver(copy)) {
+		return -1;
+	}
+
 	node->value = computeValueRec(copy, maxDepth, true);
-	int indexCol = 0;
-	int tmpVal = 0;
-	//TODO: what if the game is over
-	for (int col = 0; col < 7; col++) {
+	int indexBest = 0, tmp = 0;
+
+	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(copy, col)) {
 			spFiarGameSetMove(copy, col);
-			tmpVal = computeValueRec(copy, maxDepth - 1, false);
-			if (tmpVal == node->value) {
-				indexCol = col;
+			tmp = computeValueRec(copy, maxDepth - 1, false);
+			if (tmp == node->value) {
+				indexBest = col;
 				break;
 			}
 			spFiarGameUndoPrevMove(copy);
 		}
 	}
-	return indexCol;
+	//free memory
+	return indexBest;
 }
 

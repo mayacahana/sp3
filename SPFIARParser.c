@@ -1,5 +1,5 @@
 /*
- § * SPFAIRParser.c
+ * SPFAIRParser.c
  *
  *  Created on: 23 במאי 2017
  *      Author: uri
@@ -57,7 +57,7 @@ SPCommand spParserPraseLine(const char* str) {
 				}
 			} else if (seenadd == true && spParserIsInt(word) == true) {
 				int val = atoi(word);
-				if (val >= 1 && val <= 7) {
+				if (val >= 1 && val <= 17) {
 					res.cmd = SP_ADD_DISC;
 					res.validArg = true;
 					res.arg = val;
@@ -74,6 +74,7 @@ SPCommand spParserPraseLine(const char* str) {
 		}
 		word = strtok(NULL, " \t\r\n");
 	}
+	//free memory
 	return res;
 }
 
@@ -94,6 +95,7 @@ int spParserCommand(char* str) {
 	if (strcmp(strcopy, "restart") == 0)
 		return SP_RESTART;
 
+	//free memory
 	return SP_INVALID_LINE;
 
 }

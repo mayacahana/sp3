@@ -165,7 +165,6 @@ bool spArrayListIsFull(SPArrayList* src) {
 bool spArrayListIsEmpty(SPArrayList* src) {
 	if (!src || src->actualSize != 0)
 		return false;
-
 	return src->actualSize == 0;
 }
 
