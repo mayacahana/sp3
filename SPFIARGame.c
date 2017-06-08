@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
+//#include <stdbool.h>
 #include <stdlib.h>
 #include "SPFIARGame.h"
 
@@ -198,7 +198,6 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src) {
 		SP_FIAR_GAME_EMPTY_ENTRY;
 
 	return src->currentPlayer;
-
 }
 
 char spFiarCheckWinner(SPFiarGame* src) {
@@ -208,41 +207,55 @@ char spFiarCheckWinner(SPFiarGame* src) {
 	//vertical check
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
-			if ((src->gameBoard[i][j] == src->gameBoard[i + 1][j]
-					== src->gameBoard[i + 2][j] == src->gameBoard[i + 3][j])
-					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
-				return src->gameBoard[i][j]; //return the right symbol according to the winner
+			if (src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY
+					&& (src->gameBoard[i][j] == src->gameBoard[i + 1][j])
+					&& (src->gameBoard[i + 1][j] == src->gameBoard[i + 2][j])
+					&& (src->gameBoard[i + 2][j] == src->gameBoard[i + 3][j])) {
+
+				return src->gameBoard[i][j];
+			}
 		}
 	}
 
 	//horizonal check
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
-			if ((src->gameBoard[i][j] == src->gameBoard[i][j + 1]
-					== src->gameBoard[i][j + 2] == src->gameBoard[i][j + 3])
-					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
-				return src->gameBoard[i][j]; //return the right symbol according to the winner
+			if (src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY
+					&& (src->gameBoard[i][j] == src->gameBoard[i][j + 1])
+					&& (src->gameBoard[i][j + 1] == src->gameBoard[i][j + 2])
+					&& (src->gameBoard[i][j + 2] == src->gameBoard[i][j + 3])) {
+
+				return src->gameBoard[i][j];
+			}
 		}
 	}
 
 	//diagonal check - ascending
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
-			if ((src->gameBoard[i][j] == src->gameBoard[i + 1][j + 1]
-					== src->gameBoard[i + 2][j + 2]
-					== src->gameBoard[i + 3][j + 3])
-					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
-				return src->gameBoard[i][j]; //return the right symbol according to the winner
+			if (src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY
+					&& (src->gameBoard[i][j] == src->gameBoard[i + 1][j + 1])
+					&& (src->gameBoard[i + 1][j + 1]
+							== src->gameBoard[i + 2][j + 2])
+					&& (src->gameBoard[i + 2][j + 2]
+							== src->gameBoard[i + 3][j + 3])) {
+
+				return src->gameBoard[i][j];
+			}
 		}
 	}
 	//diagonal check - descending
 	for (int i = 3; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
-			if ((src->gameBoard[i][j] == src->gameBoard[i - 1][j + 1]
-					== src->gameBoard[i - 2][j + 2]
-					== src->gameBoard[i - 3][j + 3])
-					&& src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY)
-				return src->gameBoard[i][j]; //return the right symbol according to the winner
+			if (src->gameBoard[i][j] != SP_FIAR_GAME_EMPTY_ENTRY
+					&& (src->gameBoard[i][j] == src->gameBoard[i - 1][j + 1])
+					&& (src->gameBoard[i - 1][j + 1]
+							== src->gameBoard[i - 2][j + 2])
+					&& (src->gameBoard[i - 2][j + 2]
+							== src->gameBoard[i - 3][j + 3])) {
+
+				return src->gameBoard[i][j];
+			}
 		}
 	}
 

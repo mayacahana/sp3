@@ -8,26 +8,52 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "SPFIARGame.h"
 #include "SPFIARParser.h"
 #include "SPMainAux.h"
 #include "SPMiniMax.h"
 
 int initGame() {
+
 	int difficulty = 0;
 	printf("Please enter the difficulty level between [1-7]:\n");
-	while (scanf("%d", &difficulty) == -1 || difficulty < 1 || difficulty > 7) {
-		printf("Error: invalid level (should be between 1 to 7)\n");
-		printf("Please enter the difficulty level between [1-7]:\n");
+	char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
+	if (!input) {
+		printf("Error: initGame has failed\n");
+		free(input);
+		exit(1);
 	}
-	//char* empty[4];
-	//gets(empty);
-	//free memory
+	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+		printf("Error: initGame has failed\n");
+		free(input);
+		exit(1);
+	}
+	char* delim = " \t\r\n";
+	char* word = strtok(input, delim);
+	if (strcmp(word, "quit") == 0) {
+		printf("Exiting...\n");
+		free(input);
+		return -1;
+	} else if (!spParserIsInt(word)) {
+		printf("Error: invalid level (should be between 1 to 7)\n");
+		return initGame();
+	}
+	difficulty = atoi(word);
+	if (difficulty < 1 || difficulty > 7) {
+		printf("Error: invalid level (should be between 1 to 7)\n");
+		return initGame();
+	}
+
 	return difficulty;
+
 }
 
 int playturn(SPFiarGame* game, int difficulty, bool winflag) {
-	SPCommand spCmd = parseCommand();
+	if (!winflag)
+		printf("Please make the next move:\n");
+
+	SPCommand spCmd = parseCommand(game);
 	if (spCmd.cmd == SP_QUIT) {
 		playQuit(game);
 		return QUIT;
@@ -36,16 +62,26 @@ int playturn(SPFiarGame* game, int difficulty, bool winflag) {
 		printf("Game restarted!\n");
 		return RESTART;
 
-	} else if (spCmd.cmd == SP_ADD_DISC && spCmd.validArg == true && !winflag) {
-		return playAddDisc(difficulty, winflag, game, spCmd);
+	} else if (spCmd.cmd == SP_ADD_DISC && spCmd.validArg) {
+		if (winflag) {
+			printf("Error: the game is over\n");
+			return playturn(game, difficulty, winflag);
+		}
+		return playAddDisc(game, spCmd);
 
 	} else if (spCmd.cmd == SP_UNDO_MOVE) {
+
 		if (playUndoMove(game) == 0)
 			return NO_CHANGED;
 		playUndoMove(game);
 		return UNDO_MOVE;
 
-	} else if (spCmd.cmd == SP_SUGGEST_MOVE && !winflag) {
+	} else if (spCmd.cmd == SP_SUGGEST_MOVE) {
+
+		if (winflag) {
+			printf("Error: the game is over\n");
+			return playturn(game, difficulty, winflag);
+		}
 		return playSuggestedMove(difficulty, winflag, game);
 
 	} else {
@@ -54,7 +90,7 @@ int playturn(SPFiarGame* game, int difficulty, bool winflag) {
 	}
 }
 
-int playAddDisc(int difficulty, bool winflag, SPFiarGame* game, SPCommand spCmd) {
+int playAddDisc(SPFiarGame* game, SPCommand spCmd) {
 	if (spFiarGameIsValidMove(game, spCmd.arg - 1)) {
 		spFiarGameSetMove(game, spCmd.arg - 1);
 		return ADD_DISC;
@@ -72,7 +108,7 @@ void compPlay(SPFiarGame* game, int difficulty) {
 	//SPFiarGame* copy = spFiarGameCopy(game);
 	int col = spMinimaxSuggestMove(game, difficulty);
 	printf("Computer move: add disc to column %d\n", col + 1);
-	//free(copy);
+	//spFiarGameDestroy(copy);
 	spFiarGameSetMove(game, col);
 }
 
@@ -86,24 +122,34 @@ int playUndoMove(SPFiarGame* game) {
 }
 
 int playSuggestedMove(int difficulty, bool winflag, SPFiarGame* game) {
-	//SPFiarGame* currentGame = spFiarGameCopy(game);
+	//SPFiarGame* copy = spFiarGameCopy(game);
 	int col = spMinimaxSuggestMove(game, difficulty);
-	//free(currentGame);
+	//spFiarGameDestroy(copy);
 	printf("Suggested move: drop a disc to column %d\n", col + 1);
 	return playturn(game, difficulty, winflag);
 }
 
-SPCommand parseCommand() {
-	printf("Please make the next move:\n");
-	char* str = (char*) malloc(11 * sizeof(char));
+SPCommand parseCommand(SPFiarGame* src) {
+	char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
+	if (!input) {
+		printf("Error: parserCommand has failed\n");
+		spFiarGameDestroy(src);
+		exit(1);
+	}
 	SPCommand spCmd;
-	gets(str);
-	spCmd = spParserPraseLine(str);
+	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+		printf("Error: parseCommand has failed\n");
+		exit(1);
+	}
+	spCmd = spParserPraseLine(input);
 	while (spCmd.cmd == SP_INVALID_LINE) {
 		printf("Error: invalid command\n");
 		printf("Please make the next move:\n");
-		gets(str);
-		spCmd = spParserPraseLine(str);
+		if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+			printf("Error: parseCommand has failed\n");
+			exit(1);
+		}
+		spCmd = spParserPraseLine(input);
 	}
 	//free memory
 	return spCmd;
@@ -111,11 +157,14 @@ SPCommand parseCommand() {
 
 void winnerDeclaration(char winner) {
 	if (winner == SP_FIAR_GAME_PLAYER_1_SYMBOL)
-		printf("Game over: you win\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
+		printf(
+				"Game over: you win\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
 	if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL)
-		printf("Game over: computer wins\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
+		printf(
+				"Game over: computer wins\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
 	else
-		printf("Game over: it’s a tie\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
+		printf(
+				"Game over: it’s a tie\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
 }
 
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src) {

@@ -6,8 +6,9 @@
  */
 #include "SPMiniMaxNode.h"
 #include <limits.h>
-#include <stdbool.h>
+//#include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define MAX(x,y) (((x) > (y)) ? (x) : (y))
 #define MIN(x,y) (((x) < (y)) ? (x) : (y))
@@ -68,13 +69,14 @@ int scoringFunc(SPFiarGame* src) {
 			}
 			//tmp E {-3, -2, -1, 0, 1, 2, 3}
 			histo[tmp + 3] = histo[tmp + 3] + 1;
+			tmp = 0;
 		}
-		tmp = 0;
 	}
 
 	//horizonal check
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
+
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
 			tmp = tmp
 					+ getNumericValue(currentPlayer, src->gameBoard[i][j + 1]);
@@ -92,8 +94,8 @@ int scoringFunc(SPFiarGame* src) {
 			}
 			//tmp E {-3, -2, -1, 0, 1, 2, 3}
 			histo[tmp + 3] = histo[tmp + 3] + 1;
+			tmp = 0;
 		}
-		tmp = 0;
 	}
 
 	//diagonal check - ascending
@@ -119,8 +121,8 @@ int scoringFunc(SPFiarGame* src) {
 			}
 			//tmp E {-3, -2, -1, 0, 1, 2, 3}
 			histo[tmp + 3] = histo[tmp + 3] + 1;
+			tmp = 0;
 		}
-		tmp = 0;
 	}
 	//diagonal check - descending
 	for (int i = 3; i < SP_FIAR_GAME_N_ROWS; i++) {
@@ -145,8 +147,8 @@ int scoringFunc(SPFiarGame* src) {
 			}
 			//tmp E {-3, -2, -1, 0, 1, 2, 3}
 			histo[tmp + 3] = histo[tmp + 3] + 1;
+			tmp = 0;
 		}
-		tmp = 0;
 	}
 	//histo[3] represents 0's spans, ignore it
 	//weighting the score
@@ -168,19 +170,18 @@ int getNumericValue(char currentPlayer, char symbol) {
 int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag) {
 
 	//recursion halt
-	if (maxRecLvl == 0 || spFiarCheckOver(src))
+	if (maxRecLvl == 0 || spFiarCheckWinner(src) != '\0')
 		return scoringFunc(src);
 
-	int value = (flag) ? INT_MIN + 1 : INT_MAX - 1;
+	int value = (flag) ? INT_MIN : INT_MAX;
 	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(src, col)) {
 			spFiarGameSetMove(src, col);
-			value = decider(value, computeValueRec(src, maxRecLvl - 1, !flag),
-					flag);
+			value = decider(value, computeValueRec(src, maxRecLvl - 1, !flag), flag);
 			spFiarGameUndoPrevMove(src);
-		} else
-			continue;
+		}
 	}
+	//what if the game is full - return 0 ?
 	return value;
 }
 

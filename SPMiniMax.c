@@ -19,9 +19,9 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	if(!node)
 		return -1;
 
-	if(spFiarCheckOver(copy)) {
+	if(spFiarCheckOver(copy))
 		return -1;
-	}
+
 
 	node->value = computeValueRec(copy, maxDepth, true);
 	int indexBest = 0, tmp = 0;
@@ -37,7 +37,7 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 			spFiarGameUndoPrevMove(copy);
 		}
 	}
-	//free memory
+	spMiniMaxNodeDestroy(node);
 	return indexBest;
 }
 

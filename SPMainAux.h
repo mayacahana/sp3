@@ -13,12 +13,12 @@
 
 int initGame();
 int playturn(SPFiarGame* game, int difficulty, bool winflag);
-int playAddDisc(int difficulty, bool winflag, SPFiarGame* game, SPCommand spCmd);
+int playAddDisc(SPFiarGame* game, SPCommand spCmd);
 void compPlay(SPFiarGame* game, int difficulty);
 void playQuit(SPFiarGame* game);
 int playUndoMove(SPFiarGame* game);
 int playSuggestedMove(int difficulty, bool winflag, SPFiarGame* game);
-SPCommand parseCommand();
+SPCommand parseCommand(SPFiarGame* src);
 void winnerDeclaration(char winner);
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src);
 

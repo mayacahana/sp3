@@ -28,7 +28,6 @@ static bool spFiarGameUndoMoveTest2() {
 			ASSERT_TRUE(spFiarGameSetMove(res, i) == SP_FIAR_GAME_SUCCESS);
 		}
 	}
-
 	repeat = 20;
 	while (repeat-- > 0) {
 		ASSERT_TRUE(spFiarGameUndoPrevMove(res) == SP_FIAR_GAME_SUCCESS);

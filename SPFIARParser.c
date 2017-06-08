@@ -4,7 +4,6 @@
  *  Created on: 23 במאי 2017
  *      Author: uri
  */
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -45,11 +44,11 @@ SPCommand spParserPraseLine(const char* str) {
 			if (seencmd == false) {
 				seencmd = true;
 				int arg = spParserCommand(word);
-				if (arg == 5) { // invalid line
+				if (arg == SP_INVALID_LINE) { // invalid line
 					res.cmd = arg;
 					res.validArg = false;
 					break;
-				} else if (arg == 1) { //add disk
+				} else if (arg == SP_ADD_DISC) { //add disk
 					seenadd = true;
 				} else { //other commands
 					res.cmd = arg;
@@ -57,7 +56,7 @@ SPCommand spParserPraseLine(const char* str) {
 				}
 			} else if (seenadd == true && spParserIsInt(word) == true) {
 				int val = atoi(word);
-				if (val >= 1 && val <= 17) {
+				if (val >= 0) {
 					res.cmd = SP_ADD_DISC;
 					res.validArg = true;
 					res.arg = val;

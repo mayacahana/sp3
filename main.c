@@ -18,6 +18,8 @@ int main() {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 	int difficulty = initGame(), cmd = 0;
+	if(difficulty == -1)// the user entered quit during init
+		exit(0);
 	bool winflag = false;
 	char winner = ' ';
 	SPFiarGame* game = spFiarGameCreate(historySize);
@@ -25,11 +27,13 @@ int main() {
 		spFiarGamePrintBoard(game);
 		cmd = playturn(game, difficulty, winflag);
 		if (cmd == QUIT)
-			return 0;
+			exit(0);
 
 		if (cmd == RESTART) {
 			spFiarGameDestroy(game);
 			difficulty = initGame();
+			if(difficulty == -1)// the user entered quit during init
+				exit(0);
 			game = spFiarGameCreate(historySize);
 			winflag = false;
 			continue;
@@ -59,4 +63,17 @@ int main() {
 		}
 	}
 }
+//
+//int main() {
+
+// main for tests
+//	SPFiarGame* src = spFiarGameCreate(10);
+//	char symbol1 = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+//	//char symbol2 = SP_FIAR_GAME_PLAYER_2_SYMBOL;
+//	spFiarGamePrintBoard(src);
+//	int col = spMinimaxSuggestMove(src, 3);
+//	src->gameBoard[0][col] = symbol1;
+//	spFiarGamePrintBoard(src);
+//	spFiarGameDestroy(src);
+//}
 
