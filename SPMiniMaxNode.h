@@ -14,11 +14,12 @@ SPMiniMaxNode* spMiniMaxNodeCreate(SPFiarGame* src);
 
 void spMiniMaxNodeDestroy(SPMiniMaxNode* src);
 
-int scoringFunc(SPFiarGame* src, char whoCalledMe);
-int multiplyVector(int spans[],int vector[], int size);
+int scoringFunc(SPFiarGame* currentGame, char currentPlayer);
+
 int getNumericValue(char currentPlayer, char symbol);
 
 int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag, char currentPlayer);
+
 int decider(int value, int curr, bool flag);
 
 

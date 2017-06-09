@@ -44,7 +44,6 @@ int initGame() {
 		printf("Error: invalid level (should be between 1 to 7)\n");
 		return initGame();
 	}
-
 	return difficulty;
 
 }
@@ -76,6 +75,15 @@ int playturn(SPFiarGame* game, int difficulty, bool winflag) {
 		playUndoMove(game);
 		return UNDO_MOVE;
 
+//		int res = spFiarGameUndoPrevMoveWithPrint(game);
+//		if(res == 0)
+//			return NO_CHANGED;
+//		else if(res == SP_FIAR_GAME_PLAYER_1_SYMBOL)
+//			return UNDO_MOVE;
+//		else if(res == SP_FIAR_GAME_PLAYER_1_SYMBOL)
+//			spFiarGameUndoPrevMoveWithPrint(game);
+//		return UNDO_MOVE;
+
 	} else if (spCmd.cmd == SP_SUGGEST_MOVE) {
 
 		if (winflag) {
@@ -105,9 +113,10 @@ int playAddDisc(SPFiarGame* game, SPCommand spCmd) {
 }
 
 void compPlay(SPFiarGame* game, int difficulty) {
-	printf("diff: %d\n",difficulty);
+	//SPFiarGame* copy = spFiarGameCopy(game);
 	int col = spMinimaxSuggestMove(game, difficulty);
 	printf("Computer move: add disc to column %d\n", col + 1);
+	//spFiarGameDestroy(copy);
 	spFiarGameSetMove(game, col);
 }
 
@@ -132,11 +141,13 @@ SPCommand parseCommand(SPFiarGame* src) {
 	char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
 	if (!input) {
 		printf("Error: parserCommand has failed\n");
+		free(input);
 		spFiarGameDestroy(src);
 		exit(1);
 	}
 	SPCommand spCmd;
 	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+		free(input);
 		printf("Error: parseCommand has failed\n");
 		exit(1);
 	}
@@ -145,12 +156,13 @@ SPCommand parseCommand(SPFiarGame* src) {
 		printf("Error: invalid command\n");
 		printf("Please make the next move:\n");
 		if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+			free(input);
 			printf("Error: parseCommand has failed\n");
 			exit(1);
 		}
 		spCmd = spParserPraseLine(input);
 	}
-	//free memory
+	free(input);
 	return spCmd;
 }
 
@@ -192,11 +204,14 @@ int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src) {
 	src->tops[col] = src->tops[col] - 1;
 	src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
 
-	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL)
+	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
 		printf("Remove disc: remove computer’s disc at column %d\n", col + 1);
-	else if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL)
+		return SP_FIAR_GAME_PLAYER_2_SYMBOL;
+	} else if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
 		printf("Remove disc: remove user’s disc at column %d\n", col + 1);
+		return SP_FIAR_GAME_PLAYER_1_SYMBOL;
 
-	return 1;
+	}
+	return 17;
 }
 

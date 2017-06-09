@@ -26,8 +26,10 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 		return NULL;
 
 	SPFiarGame* res = (SPFiarGame*) malloc(sizeof(SPFiarGame));
-	if (!res)
-		return NULL;
+	if (!res) {
+		printf("Error: spFiarGameCreate has failed\n");
+		exit(1);
+	}
 
 	//init board with blanks
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
@@ -44,8 +46,8 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 	res->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 
 	//init movesLists
-	res->movesPlayer1 = spArrayListCreate(historySize);
-	res->movesPlayer2 = spArrayListCreate(historySize);
+	res->movesPlayer1 = spArrayListCreate(historySize / 2);
+	res->movesPlayer2 = spArrayListCreate(historySize / 2);
 
 	if (!res->movesPlayer1 || !res->movesPlayer2)
 		return NULL;
@@ -58,8 +60,11 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 		return NULL;
 
 	SPFiarGame* res = (SPFiarGame*) malloc(sizeof(SPFiarGame));
-	if (!res)
-		return NULL;
+	if (!res) {
+		free(src);
+		printf("Error: spFiarGameCopy has failed");
+		exit(1);
+	}
 
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++)
@@ -109,34 +114,29 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 	if (!src || col < 0 || col > SP_FIAR_GAME_N_COLUMNS - 1)
 		return SP_FIAR_GAME_INVALID_ARGUMENT;
 
-	if (src->tops[col] >= SP_FIAR_GAME_N_ROWS)
+	if (src->tops[col] == SP_FIAR_GAME_N_ROWS)
 		return SP_FIAR_GAME_INVALID_MOVE;
 
+	src->gameBoard[src->tops[col]][col] = src->currentPlayer;
 	src->tops[col] = src->tops[col] + 1;
+
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
-		int msg = spArrayListAddFirst(src->movesPlayer1, col);
-		if (msg == SP_ARRAY_LIST_FULL) {
-			// the list is full, make room by removing last elem
+		if (spArrayListIsFull(src->movesPlayer1))
 			spArrayListRemoveLast(src->movesPlayer1);
-			spArrayListAddFirst(src->movesPlayer1, col);
-		}
+		spArrayListAddFirst(src->movesPlayer1, col);
 
 	} else { //currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL
-		int msg = spArrayListAddFirst(src->movesPlayer2, col);
-		if (msg == SP_ARRAY_LIST_FULL) {
-			// the list is full, make room by removing last elem
+		if (spArrayListIsFull(src->movesPlayer2))
 			spArrayListRemoveLast(src->movesPlayer2);
-			spArrayListAddFirst(src->movesPlayer2, col);
-		}
+		spArrayListAddFirst(src->movesPlayer2, col);
 	}
-	src->gameBoard[src->tops[col] - 1][col] = src->currentPlayer;
 	changePlayer(src);
 	return SP_FIAR_GAME_SUCCESS;
 }
 
 bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 	if (!src || col < 0|| col > SP_FIAR_GAME_N_COLUMNS - 1 ||
-	src->tops[col] >= SP_FIAR_GAME_N_ROWS)
+	src->tops[col] == SP_FIAR_GAME_N_ROWS)
 		return false;
 	return true;
 }
@@ -144,37 +144,26 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	if (!src)
 		return SP_FIAR_GAME_INVALID_ARGUMENT;
+	int col = 0;
 
-	if ((src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL
-			&& spArrayListIsEmpty(src->movesPlayer1))
-			|| (src->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL
-					&& spArrayListIsEmpty(src->movesPlayer2))) {
-		return SP_FIAR_GAME_NO_HISTORY;
-	}
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
+		if (spArrayListIsEmpty(src->movesPlayer2))
+			return SP_FIAR_GAME_NO_HISTORY;
 
-		int col = spArrayListGetFirst(src->movesPlayer1);
-		spArrayListRemoveFirst(src->movesPlayer1);
-		src->tops[col] = src->tops[col] - 1;
-		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
-		//src->currentPlayer = SP_FIAR_GAME_PLAYER_2_SYMBOL;
-	} else {
-		int col = spArrayListGetFirst(src->movesPlayer2);
+		col = spArrayListGetFirst(src->movesPlayer2);
 		spArrayListRemoveFirst(src->movesPlayer2);
-		src->tops[col] = src->tops[col] - 1;
-		src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
-		//src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+	} else {
+		if (spArrayListIsEmpty(src->movesPlayer1))
+			return SP_FIAR_GAME_NO_HISTORY;
 
+		col = spArrayListGetFirst(src->movesPlayer1);
+		spArrayListRemoveFirst(src->movesPlayer1);
 	}
 	changePlayer(src);
+	src->gameBoard[src->tops[col] - 1][col] = SP_FIAR_GAME_EMPTY_ENTRY;
+	src->tops[col] = src->tops[col] - 1;
 	return SP_FIAR_GAME_SUCCESS;
 }
-
-//int spGameUndoPlayer2(SPFiarGame* src){
-//	//extract the last moves for each player
-//	int col1 = spArrayListGetFirst(src->movesPlayer1);
-//	int col2 = spArrayListGetFirst(src->movesPlayer2);
-//}
 
 SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	if (!src)
@@ -261,6 +250,7 @@ char spFiarCheckWinner(SPFiarGame* src) {
 
 	if (spFiarCheckOver(src))
 		return SP_FIAR_GAME_TIE_SYMBOL;
+
 	return '\0';
 }
 

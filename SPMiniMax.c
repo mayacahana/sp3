@@ -6,7 +6,6 @@
  *
  */
 #include "SPMiniMaxNode.h"
-#include <stdio.h>
 #include <limits.h>
 
 int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
@@ -14,11 +13,9 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 		return -1;
 
 	int childValue = 0;
-	int max = INT_MIN; //first iteration- max
+	int max = INT_MIN; //first iteration - max
 	int bestIndex = -1;
 	char currentPlayer = spFiarGameGetCurrentPlayer(currentGame);
-	//debug
-	printf("the curr player is: %c\n", currentPlayer);
 	SPFiarGame* copy = spFiarGameCopy(currentGame);
 	if (!copy)
 		return -1;
@@ -29,13 +26,10 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(copy, col)) {
 			spFiarGameSetMove(copy, col);
-			childValue = computeValueRec(copy, maxDepth - 1, false,currentPlayer);
-			printf("Child value:%d col:%d\n",childValue,col);
-			 //TODO: change
+			childValue = computeValueRec(copy, maxDepth - 1, false, currentPlayer);
 			if (max < childValue || bestIndex == -1) {
 				max = childValue;
 				bestIndex = col;
-				printf("best index:%d\n",bestIndex);
 			}
 			spFiarGameUndoPrevMove(copy);
 		}

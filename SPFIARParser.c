@@ -29,7 +29,11 @@ bool spParserIsInt(const char* str) {
 
 SPCommand spParserPraseLine(const char* str) {
 
-	char *strcopy = (char*) malloc(strlen(str) + 1);
+	char *strcopy = (char*) malloc((strlen(str) + 1)*sizeof(char));
+	if(!strcopy) {
+		printf("Error: spParserPraseLine has failed\n");
+		exit(1);
+	}
 	strcpy(strcopy, str);
 
 	SPCommand res;
@@ -56,7 +60,7 @@ SPCommand spParserPraseLine(const char* str) {
 				}
 			} else if (seenadd == true && spParserIsInt(word) == true) {
 				int val = atoi(word);
-				if (val >= 0) {
+				if (true) {
 					res.cmd = SP_ADD_DISC;
 					res.validArg = true;
 					res.arg = val;
@@ -73,14 +77,14 @@ SPCommand spParserPraseLine(const char* str) {
 		}
 		word = strtok(NULL, " \t\r\n");
 	}
-	//free memory
+	free(strcopy);
 	return res;
 }
 
 int spParserCommand(char* str) {
 
 	//create a copy
-	char *strcopy = (char*) malloc(strlen(str) + 1);
+	char *strcopy = (char*) malloc((strlen(str) + 1)*sizeof(char));
 	strcpy(strcopy, str);
 
 	if (strcmp(strcopy, "undo_move") == 0)
@@ -94,7 +98,7 @@ int spParserCommand(char* str) {
 	if (strcmp(strcopy, "restart") == 0)
 		return SP_RESTART;
 
-	//free memory
+	free(strcopy);
 	return SP_INVALID_LINE;
 
 }

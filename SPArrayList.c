@@ -16,13 +16,16 @@ SPArrayList* spArrayListCreate(int maxSize) {
 		return NULL;
 
 	SPArrayList* res = (SPArrayList*) malloc(sizeof(SPArrayList));
-	if (!res)
-		return NULL;
+	if (!res) {
+		printf("Error: spArrayListCreate has failed\n");
+		exit(1);
+	}
 
 	res->elements = malloc(sizeof(int)*maxSize);
 	if (res->elements == NULL) {
+		printf("Error: spArrayListCreate has failed\n");
 		free(res);
-		return NULL;
+		exit(1);
 	}
 
 	res->maxSize = maxSize;
@@ -68,16 +71,16 @@ SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src) {
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 
 	src->actualSize = 0;
-	//maxSize not affected
+	//maxSize not affected and elems not affected
 	return SP_ARRAY_LIST_SUCCESS;
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
-	if (!src || index < 0 || index > src->maxSize - 1) {
+	if (!src || index < 0 || index > src->actualSize) {
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
 
-	if (src->actualSize >= src->maxSize)
+	if (src->actualSize == src->maxSize)
 		return SP_ARRAY_LIST_FULL;
 
 	//shift elements to the right, to make space for the new elem
@@ -100,7 +103,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
-	if (!src || index < 0 || index > src->maxSize - 1)
+	if (!src || index < 0 || index >= src->actualSize)
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 
 	if (src->actualSize == 0)
@@ -125,7 +128,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
 }
 
 int spArrayListGetAt(SPArrayList* src, int index) {
-	if (!src || index < 0 || index > src->maxSize - 1)
+	if (!src || index < 0 || index >= src->actualSize)
 		return -1;
 
 	return src->elements[index];
@@ -156,15 +159,16 @@ int spArrayListSize(SPArrayList* src) {
 }
 
 bool spArrayListIsFull(SPArrayList* src) {
-	if (!src || src->actualSize != src->maxSize)
+	if (!src || src->actualSize < src->maxSize)
 		return false;
 
-	return src->actualSize == src->maxSize;
+	return true;
 }
 
 bool spArrayListIsEmpty(SPArrayList* src) {
 	if (!src || src->actualSize != 0)
 		return false;
-	return src->actualSize == 0;
+
+	return true;
 }
 

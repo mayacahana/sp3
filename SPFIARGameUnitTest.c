@@ -13,7 +13,7 @@ static bool spFiarGameValidMoveTest() {
 
 	}
 	ASSERT_FALSE(spFiarGameIsValidMove(res, 2));
-	ASSERT_TRUE(spFiarGameSetMove(res,2)==SP_FIAR_GAME_INVALID_MOVE);
+	ASSERT_TRUE(spFiarGameSetMove(res, 2) == SP_FIAR_GAME_INVALID_MOVE);
 	spFiarGamePrintBoard(res);
 	spFiarGameDestroy(res);
 	return true;
