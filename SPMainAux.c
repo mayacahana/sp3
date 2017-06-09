@@ -105,10 +105,9 @@ int playAddDisc(SPFiarGame* game, SPCommand spCmd) {
 }
 
 void compPlay(SPFiarGame* game, int difficulty) {
-	//SPFiarGame* copy = spFiarGameCopy(game);
+	printf("diff: %d\n",difficulty);
 	int col = spMinimaxSuggestMove(game, difficulty);
 	printf("Computer move: add disc to column %d\n", col + 1);
-	//spFiarGameDestroy(copy);
 	spFiarGameSetMove(game, col);
 }
 
@@ -159,7 +158,7 @@ void winnerDeclaration(char winner) {
 	if (winner == SP_FIAR_GAME_PLAYER_1_SYMBOL)
 		printf(
 				"Game over: you win\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
-	if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL)
+	else if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL)
 		printf(
 				"Game over: computer wins\nPlease enter ‘quit’ to exit or ‘restart’ to start a new game!\n");
 	else

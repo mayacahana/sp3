@@ -18,7 +18,7 @@ int main() {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 	int difficulty = initGame(), cmd = 0;
-	if(difficulty == -1)// the user entered quit during init
+	if (difficulty == -1) // the user entered quit during init
 		exit(0);
 	bool winflag = false;
 	char winner = ' ';
@@ -32,7 +32,7 @@ int main() {
 		if (cmd == RESTART) {
 			spFiarGameDestroy(game);
 			difficulty = initGame();
-			if(difficulty == -1)// the user entered quit during init
+			if (difficulty == -1) // the user entered quit during init
 				exit(0);
 			game = spFiarGameCreate(historySize);
 			winflag = false;
@@ -63,17 +63,18 @@ int main() {
 		}
 	}
 }
-//
-//int main() {
 
-// main for tests
+//int main() {
+//
+//
 //	SPFiarGame* src = spFiarGameCreate(10);
-//	char symbol1 = SP_FIAR_GAME_PLAYER_1_SYMBOL;
-//	//char symbol2 = SP_FIAR_GAME_PLAYER_2_SYMBOL;
+//	for(int i=0; i<7;i++){
+//		for(int j=0;j<6;j++){
+//			spFiarGameSetMove(src,i);
+//		}
+//	}
 //	spFiarGamePrintBoard(src);
-//	int col = spMinimaxSuggestMove(src, 3);
-//	src->gameBoard[0][col] = symbol1;
-//	spFiarGamePrintBoard(src);
+//	printf("salami:%d\n",spFiarCheckOver(src));
 //	spFiarGameDestroy(src);
 //}
 

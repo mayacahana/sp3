@@ -6,38 +6,40 @@
  *
  */
 #include "SPMiniMaxNode.h"
+#include <stdio.h>
+#include <limits.h>
 
 int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	if (!currentGame || maxDepth <= 0)
 		return -1;
 
+	int childValue = 0;
+	int max = INT_MIN; //first iteration- max
+	int bestIndex = -1;
+	char currentPlayer = spFiarGameGetCurrentPlayer(currentGame);
+	//debug
+	printf("the curr player is: %c\n", currentPlayer);
 	SPFiarGame* copy = spFiarGameCopy(currentGame);
 	if (!copy)
 		return -1;
 
-	SPMiniMaxNode* node = spMiniMaxNodeCreate(copy);
-	if(!node)
+	if (spFiarCheckOver(copy))
 		return -1;
-
-	if(spFiarCheckOver(copy))
-		return -1;
-
-
-	node->value = computeValueRec(copy, maxDepth, true);
-	int indexBest = 0, tmp = 0;
 
 	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(copy, col)) {
 			spFiarGameSetMove(copy, col);
-			tmp = computeValueRec(copy, maxDepth - 1, false);
-			if (tmp == node->value) {
-				indexBest = col;
-				break;
+			childValue = computeValueRec(copy, maxDepth - 1, false,currentPlayer);
+			printf("Child value:%d col:%d\n",childValue,col);
+			 //TODO: change
+			if (max < childValue || bestIndex == -1) {
+				max = childValue;
+				bestIndex = col;
+				printf("best index:%d\n",bestIndex);
 			}
 			spFiarGameUndoPrevMove(copy);
 		}
 	}
-	spMiniMaxNodeDestroy(node);
-	return indexBest;
+	return bestIndex;
 }
 
