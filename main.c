@@ -18,21 +18,26 @@ int main() {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 	int difficulty = initGame(), cmd = 0;
-	if(difficulty == -1)// the user entered quit during init
+	if (difficulty == -1) // the user entered quit during init
 		exit(0);
 	bool winflag = false;
 	char winner = ' ';
 	SPFiarGame* game = spFiarGameCreate(historySize);
 	while (true) {
-		spFiarGamePrintBoard(game);
+		//check
+		if (!winflag && cmd != NO_CHANGED) {
+			spFiarGamePrintBoard(game);
+			printf("Please make the next move:\n");
+		}
 		cmd = playturn(game, difficulty, winflag);
 		if (cmd == QUIT)
 			exit(0);
 
 		if (cmd == RESTART) {
 			spFiarGameDestroy(game);
+			//new game starts
 			difficulty = initGame();
-			if(difficulty == -1)// the user entered quit during init
+			if (difficulty == -1) // the user entered quit during init
 				exit(0);
 			game = spFiarGameCreate(historySize);
 			winflag = false;
