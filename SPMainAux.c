@@ -18,23 +18,23 @@ int initGame() {
 
 	int difficulty = 0;
 	printf("Please enter the difficulty level between [1-7]:\n");
-	char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
-	if (!input) {
-		printf("Error: initGame has failed\n");
-		free(input);
-		exit(1);
-	}
+	char input[SP_MAX_LINE_LENGTH];
+	//char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
+//	if (!input) {
+//		printf("Error: initGame has failed\n");
+//		free(input);
+//		exit(1);
+//	}
 	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
 		printf("Error: initGame has failed\n");
-		free(input);
 		exit(1);
 	}
 	char* delim = " \t\r\n";
 	char* word = strtok(input, delim);
 	if (strcmp(word, "quit") == 0) {
 		printf("Exiting...\n");
-		free(input);
 		return -1;
+
 	} else if (!spParserIsInt(word)) {
 		printf("Error: invalid level (should be between 1 to 7)\n");
 		return initGame();
@@ -44,16 +44,14 @@ int initGame() {
 		printf("Error: invalid level (should be between 1 to 7)\n");
 		return initGame();
 	}
-	free(input);
+	//free(input);
 	return difficulty;
 
 }
 
 int playturn(SPFiarGame* game, int difficulty, bool winflag) {
-	//if (!winflag)
-	//	printf("Please make the next move:\n");
 
-	SPCommand spCmd = parseCommand(game);
+	SPCommand spCmd = parseCommand();
 	if (spCmd.cmd == SP_QUIT) {
 		playQuit(game);
 		return QUIT;
@@ -138,17 +136,18 @@ int playSuggestedMove(int difficulty, bool winflag, SPFiarGame* game) {
 	return playturn(game, difficulty, winflag);
 }
 
-SPCommand parseCommand(SPFiarGame* src) {
-	char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
-	if (!input) {
-		printf("Error: parserCommand has failed\n");
-		free(input);
-		spFiarGameDestroy(src);
-		exit(1);
-	}
+SPCommand parseCommand() {
+	char input[SP_MAX_LINE_LENGTH];
+	//char* input = (char*) malloc(SP_MAX_LINE_LENGTH * sizeof(char));
+//	if (!input) {
+//		printf("Error: parserCommand has failed\n");
+//		free(input);
+//		spFiarGameDestroy(src);
+//		exit(1);
+//	}
 	SPCommand spCmd;
 	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
-		free(input);
+		//free(input);
 		printf("Error: parseCommand has failed\n");
 		exit(1);
 	}
@@ -157,13 +156,13 @@ SPCommand parseCommand(SPFiarGame* src) {
 		printf("Error: invalid command\n");
 		//printf("Please make the next move:\n");
 		if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
-			free(input);
+			//free(input);
 			printf("Error: parseCommand has failed\n");
 			exit(1);
 		}
 		spCmd = spParserPraseLine(input);
 	}
-	free(input);
+	//free(input);
 	return spCmd;
 }
 

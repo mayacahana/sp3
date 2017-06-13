@@ -47,13 +47,9 @@ bool spParserIsInt(const char* str);
  */
 SPCommand spParserPraseLine(const char* str);
 
-/**
- * aux function that helps parse the command to the current int value.
- * @param str - the input
- *
- * @return
- * number that indicates which command we received from the user
- */
+/*
+ * My Function - Parses a command
+*/
 int spParserCommand(char* str);
 
 #endif

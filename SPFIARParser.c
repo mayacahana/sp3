@@ -91,17 +91,27 @@ int spParserCommand(char* str) {
 	}
 	strcpy(strcopy, str);
 
-	if (strcmp(strcopy, "undo_move") == 0)
-		return SP_UNDO_MOVE;
-	if (strcmp(strcopy, "add_disc") == 0)
-		return SP_ADD_DISC;
-	if (strcmp(strcopy, "suggest_move") == 0)
-		return SP_SUGGEST_MOVE;
-	if (strcmp(strcopy, "quit") == 0)
-		return SP_QUIT;
-	if (strcmp(strcopy, "restart_game") == 0)
-		return SP_RESTART;
+	if (strcmp(strcopy, "undo_move") == 0) {
+		free(strcopy);
 
+		return SP_UNDO_MOVE;
+	}
+	if (strcmp(strcopy, "add_disc") == 0) {
+		free(strcopy);
+		return SP_ADD_DISC;
+	}
+	if (strcmp(strcopy, "suggest_move") == 0) {
+		free(strcopy);
+		return SP_SUGGEST_MOVE;
+	}
+	if (strcmp(strcopy, "restart_game") == 0) {
+		free(strcopy);
+		return SP_RESTART;
+	}
+	if (strcmp(strcopy, "quit") == 0) {
+		free(strcopy);
+		return SP_QUIT;
+	}
 	free(strcopy);
 	return SP_INVALID_LINE;
 

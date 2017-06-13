@@ -49,10 +49,10 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 	res->movesPlayer1 = spArrayListCreate(historySize / 2);
 	res->movesPlayer2 = spArrayListCreate(historySize / 2);
 
-	if (!res->movesPlayer1 || !res->movesPlayer2) {
-		free(res);
-		return NULL;
-	}
+//	if (!res->movesPlayer1 || !res->movesPlayer2) {
+//		free(res);
+//		return NULL;
+//	}
 	return res;
 }
 
@@ -60,13 +60,13 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 	if (!src)
 		return NULL;
 
-	SPFiarGame* res = (SPFiarGame*) malloc(sizeof(SPFiarGame));
+	SPFiarGame* res = spFiarGameCreate(2 * src->movesPlayer1->maxSize);
+	//SPFiarGame* res = (SPFiarGame*) malloc(sizeof(SPFiarGame));
 	if (!res) {
 		free(src);
-		printf("Error: spFiarGameCopy has failed");
+		printf("Error: spFiarGameCopy has failed\n");
 		exit(1);
 	}
-
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++)
 			res->gameBoard[i][j] = src->gameBoard[i][j];
@@ -79,6 +79,8 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 	//copy currentPlayer
 	res->currentPlayer = src->currentPlayer;
 
+	spArrayListDestroy(res->movesPlayer1);
+	spArrayListDestroy(res->movesPlayer2);
 	//copy movesPlayer
 	res->movesPlayer1 = spArrayListCopy(src->movesPlayer1);
 	if (res->movesPlayer1 == NULL) {
@@ -99,16 +101,12 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 }
 
 void spFiarGameDestroy(SPFiarGame* src) {
-	if (!src)
-		return;
+	if (src != NULL) {
+		spArrayListDestroy(src->movesPlayer1);
+		spArrayListDestroy(src->movesPlayer2);
+		free(src);
+	}
 
-	spArrayListDestroy(src->movesPlayer1);
-	spArrayListDestroy(src->movesPlayer2);
-	//free(src->tops);
-	//free(src->gameBoard);
-	free(src);
-
-	return;
 }
 
 SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
@@ -184,8 +182,8 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 }
 
 char spFiarGameGetCurrentPlayer(SPFiarGame* src) {
-	if (!src)
-		SP_FIAR_GAME_EMPTY_ENTRY;
+	//if (!src)
+	//	SP_FIAR_GAME_EMPTY_ENTRY;
 
 	return src->currentPlayer;
 }

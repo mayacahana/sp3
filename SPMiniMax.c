@@ -1,4 +1,5 @@
 /*
+
  * SPMiniMax.c
  *
  *  Created on: 2 ביוני 2017
@@ -22,7 +23,7 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 		return -1;
 
 	if (spFiarCheckOver(copy)) {
-		free(copy);
+		spFiarGameDestroy(copy);
 		return -1;
 	}
 	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
@@ -36,7 +37,7 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 			spFiarGameUndoPrevMove(copy);
 		}
 	}
-	free(copy);
+	spFiarGameDestroy(copy);
 	return bestIndex;
 }
 

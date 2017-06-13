@@ -158,19 +158,10 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 */
 char spFiarCheckWinner(SPFiarGame* src);
 
-/**
- * checks if the game if over. i.e. the game board is full.
- * @param src - The source game
- * @return
- * True iff the board is full. False otherwise.
- */
+//my function, the function checks if the game is over, i.e the game board is full
 bool spFiarCheckOver(SPFiarGame* src);
 
-/**
- * changes the current player of the game- to the opposite one.
- * @param src - The source game
- *
- */
+//my functions, change player turn
 void changePlayer(SPFiarGame* src);
 
 #endif
