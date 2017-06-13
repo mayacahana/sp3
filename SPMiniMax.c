@@ -6,6 +6,7 @@
  *
  */
 #include "SPMiniMaxNode.h"
+#include <stdlib.h>
 #include <limits.h>
 
 int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
@@ -20,9 +21,10 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	if (!copy)
 		return -1;
 
-	if (spFiarCheckOver(copy))
+	if (spFiarCheckOver(copy)) {
+		free(copy);
 		return -1;
-
+	}
 	for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++) {
 		if (spFiarGameIsValidMove(copy, col)) {
 			spFiarGameSetMove(copy, col);
@@ -34,6 +36,7 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 			spFiarGameUndoPrevMove(copy);
 		}
 	}
+	free(copy);
 	return bestIndex;
 }
 

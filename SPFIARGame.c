@@ -49,9 +49,10 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 	res->movesPlayer1 = spArrayListCreate(historySize / 2);
 	res->movesPlayer2 = spArrayListCreate(historySize / 2);
 
-	if (!res->movesPlayer1 || !res->movesPlayer2)
+	if (!res->movesPlayer1 || !res->movesPlayer2) {
+		free(res);
 		return NULL;
-
+	}
 	return res;
 }
 

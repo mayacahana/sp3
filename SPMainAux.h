@@ -77,9 +77,4 @@ SPCommand parseCommand(SPFiarGame* src);
 void winnerDeclaration(char winner);
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src);
 
-
-
-
-
-
 #endif

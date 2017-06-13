@@ -29,8 +29,8 @@ bool spParserIsInt(const char* str) {
 
 SPCommand spParserPraseLine(const char* str) {
 
-	char *strcopy = (char*) malloc((strlen(str) + 1)*sizeof(char));
-	if(!strcopy) {
+	char *strcopy = (char*) malloc((strlen(str) + 1) * sizeof(char));
+	if (!strcopy) {
 		printf("Error: spParserPraseLine has failed\n");
 		exit(1);
 	}
@@ -84,7 +84,11 @@ SPCommand spParserPraseLine(const char* str) {
 int spParserCommand(char* str) {
 
 	//create a copy
-	char *strcopy = (char*) malloc((strlen(str) + 1)*sizeof(char));
+	char *strcopy = (char*) malloc((strlen(str) + 1) * sizeof(char));
+	if (!strcopy) {
+		printf("Error: spParserCommand has failed\n");
+		exit(1);
+	}
 	strcpy(strcopy, str);
 
 	if (strcmp(strcopy, "undo_move") == 0)
@@ -95,7 +99,7 @@ int spParserCommand(char* str) {
 		return SP_SUGGEST_MOVE;
 	if (strcmp(strcopy, "quit") == 0)
 		return SP_QUIT;
-	if (strcmp(strcopy, "restart") == 0)
+	if (strcmp(strcopy, "restart_game") == 0)
 		return SP_RESTART;
 
 	free(strcopy);

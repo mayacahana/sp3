@@ -44,13 +44,14 @@ int initGame() {
 		printf("Error: invalid level (should be between 1 to 7)\n");
 		return initGame();
 	}
+	free(input);
 	return difficulty;
 
 }
 
 int playturn(SPFiarGame* game, int difficulty, bool winflag) {
-	if (!winflag)
-		printf("Please make the next move:\n");
+	//if (!winflag)
+	//	printf("Please make the next move:\n");
 
 	SPCommand spCmd = parseCommand(game);
 	if (spCmd.cmd == SP_QUIT) {
@@ -107,7 +108,7 @@ int playAddDisc(SPFiarGame* game, SPCommand spCmd) {
 			printf("Error: column number must be in range 1-7\n");
 		else if (game->tops[spCmd.arg - 1] == SP_FIAR_GAME_N_ROWS)
 			printf("Error: column %d is full\n", spCmd.arg);
-		return 3;
+		return NO_CHANGED;
 	}
 	return ADD_DISC;
 }
@@ -154,7 +155,7 @@ SPCommand parseCommand(SPFiarGame* src) {
 	spCmd = spParserPraseLine(input);
 	while (spCmd.cmd == SP_INVALID_LINE) {
 		printf("Error: invalid command\n");
-		printf("Please make the next move:\n");
+		//printf("Please make the next move:\n");
 		if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
 			free(input);
 			printf("Error: parseCommand has failed\n");
@@ -205,12 +206,11 @@ int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src) {
 	src->gameBoard[src->tops[col]][col] = SP_FIAR_GAME_EMPTY_ENTRY;
 
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
-		printf("Remove disc: remove computer’s disc at column %d\n", col + 1);
-		return SP_FIAR_GAME_PLAYER_2_SYMBOL;
+		printf("Remove disc: remove computer's disc at column %d\n", col + 1);
+		//return SP_FIAR_GAME_PLAYER_2_SYMBOL;
 	} else if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
-		printf("Remove disc: remove user’s disc at column %d\n", col + 1);
-		return SP_FIAR_GAME_PLAYER_1_SYMBOL;
-
+		printf("Remove disc: remove user's disc at column %d\n", col + 1);
+		//return SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
 	return 17;
 }
