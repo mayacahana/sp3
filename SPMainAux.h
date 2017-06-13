@@ -73,8 +73,27 @@ int playUndoMove(SPFiarGame* game);
  *
  */
 int playSuggestedMove(int difficulty, bool winflag, SPFiarGame* game);
+/**
+ * Gets an input from the user, parser it and return the command to commit
+ *
+ * @param src - The source game
+ * @return
+ *
+ */
 SPCommand parseCommand(SPFiarGame* src);
+/**
+ * Prints a message informing the winner. If there is a tie -
+ * prints a message accordingly.
+ *
+ * @param winner - the symbol of the winner - 'X' or 'O'
+ */
 void winnerDeclaration(char winner);
+/**
+ * Commit the undo-move move and prints a message accordingly.
+ * @param src - The source game
+ * @return
+ *
+ */
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src);
 
 #endif
