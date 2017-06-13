@@ -10,18 +10,20 @@
 #define NO_CHANGED 3
 #define UNDO_MOVE 4
 /**
- * initalizing a new game. This function asks for the difficulty level and create a new
- * gameboard.
+ * Initializing a new game. This function asks for the difficulty level and create a new
+ * game board.
  * @return
  * the difficulty level of the game
  */
 int initGame();
 /**
  * the function is getting an input from the user and parser the command.
+ * @param game- The source game
+ * @param difficulty - the difficulty level of the game
+ * @param winflag - a boolean variant indicates of there's a winner - True. False otherwise.
  *
  * @return
  * a number that indicates which command should the program commit.
- *
  */
 int playturn(SPFiarGame* game, int difficulty, bool winflag);
 /**
@@ -31,7 +33,7 @@ int playturn(SPFiarGame* game, int difficulty, bool winflag);
  * @param game- The source game
  * @param spCmd - the command to parser
  * @return
- *
+ * an int value according to step to be performed.
  *
  */
 int playAddDisc(SPFiarGame* game, SPCommand spCmd);
@@ -42,7 +44,6 @@ int playAddDisc(SPFiarGame* game, SPCommand spCmd);
  *
  * @param game - The source game
  * @param difficulty - the difficulty level of the game
- *
  */
 void compPlay(SPFiarGame* game, int difficulty);
 /**
@@ -50,7 +51,6 @@ void compPlay(SPFiarGame* game, int difficulty);
  * is exiting.
  *
  * @param game - The source game
- *
  */
 void playQuit(SPFiarGame* game);
 /**
@@ -59,7 +59,8 @@ void playQuit(SPFiarGame* game);
  * in a row then an error occurs.
  *
  * @param game - The source game
- *
+ * @return
+ * 17 if the command was successful, 0 otherwise.
  */
 int playUndoMove(SPFiarGame* game);
 /**
@@ -70,15 +71,17 @@ int playUndoMove(SPFiarGame* game);
  * @param game - The source game
  *
  * @return
- *
+ * an int value according to step to be performed.
  */
 int playSuggestedMove(int difficulty, bool winflag, SPFiarGame* game);
 /**
  * Gets an input from the user, parser it and return the command to commit
  *
  * @param src - The source game
- * @return
+ * @param winflag - True iff there is a winner, False otherwise
  *
+ * @return
+ * the parsed command.
  */
 SPCommand parseCommand(SPFiarGame* src);
 /**
@@ -91,8 +94,9 @@ void winnerDeclaration(char winner);
 /**
  * Commit the undo-move move and prints a message accordingly.
  * @param src - The source game
- * @return
  *
+ * @return
+ * 17 if the command was successful, 0 otherwise.
  */
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src);
 
