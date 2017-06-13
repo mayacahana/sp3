@@ -67,7 +67,7 @@ int playUndoMove(SPFiarGame* game);
  * Play the suggested move offered by the minimax algorithm and print a
  * message.
  * @param difficulty - the difficulty level of the game
- * @param winflag
+ * @param winflag - True iff there is a winner, False otherwise
  * @param game - The source game
  *
  * @return
