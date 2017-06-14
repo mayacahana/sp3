@@ -14,31 +14,7 @@
 #define MAX(x,y) (((x) > (y)) ? (x) : (y))
 #define MIN(x,y) (((x) < (y)) ? (x) : (y))
 
-//SPMiniMaxNode* spMiniMaxNodeCreate(SPFiarGame* src) {
-//
-//	SPMiniMaxNode* res = (SPMiniMaxNode*) malloc(sizeof(SPMiniMaxNode));
-//	if (!res)
-//		return NULL;
-//
-//	res->value = 0;
-//	res->game = spFiarGameCopy(src);
-//	if (res->game == NULL) {
-//		free(res);
-//		return NULL;
-//	}
-//	return res;
-//}
 
-//void spMiniMaxNodeDestroy(SPMiniMaxNode* src) {
-//
-//	if (!src)
-//		return;
-//
-//	spFiarGameDestroy(src->game);
-//	free(src);
-//	return;
-//
-//}
 
 int scoringFunc(SPFiarGame* src, char currentPlayer) {
 
@@ -102,9 +78,7 @@ int scoringFunc(SPFiarGame* src, char currentPlayer) {
 	for (int i = 0; i < SP_FIAR_GAME_N_ROWS - 3; i++) {
 		for (int j = 0; j < SP_FIAR_GAME_N_COLUMNS - 3; j++) {
 			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i][j]);
-			tmp = tmp
-					+ getNumericValue(currentPlayer,
-							src->gameBoard[i + 1][j + 1]);
+			tmp = tmp + getNumericValue(currentPlayer, src->gameBoard[i + 1][j + 1]);
 			tmp = tmp
 					+ getNumericValue(currentPlayer,
 							src->gameBoard[i + 2][j + 2]);

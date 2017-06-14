@@ -4,11 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//put auxiliary functions and constants used by the main function here.
 #define QUIT 0
 #define RESTART 1
 #define ADD_DISC 2
 #define NO_CHANGED 3
 #define UNDO_MOVE 4
+
 /**
  * Initializing a new game. This function asks for the difficulty level and create a new
  * game board.
@@ -16,6 +18,7 @@
  * the difficulty level of the game
  */
 int initGame();
+
 /**
  * the function is getting an input from the user and parser the command.
  * @param game- The source game
@@ -99,5 +102,6 @@ void winnerDeclaration(char winner);
  * 17 if the command was successful, 0 otherwise.
  */
 int spFiarGameUndoPrevMoveWithPrint(SPFiarGame* src);
+
 
 #endif

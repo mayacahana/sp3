@@ -20,7 +20,6 @@ typedef struct sp_mini_max_node_t {
  * @param currentPlayer - The player we calcuate the score for.
  * @return
  * The board's score.
- *
  */
 int scoringFunc(SPFiarGame* currentGame, char currentPlayer);
 /**
@@ -32,15 +31,31 @@ int scoringFunc(SPFiarGame* currentGame, char currentPlayer);
  * @param symbol - the symbol in the specific entry.
  * @return
  * the numeric value according to above.
- *
  */
 int getNumericValue(char currentPlayer, char symbol);
+
 /**
+ * the recursive function that compute the value of the root according
+ * the MinMax algorithm as shown in class.
+ * @param: src - the current game
+ * @param: maxRecLvl - respresents the recursion depth level (set by the difficule level of the game)
+ * @param: falg - boolean var represents whether to take MAX between elems or MIN.
+ * @param: currentplayer - the symbol of the current player/
  *
+ * @return
+ * a numeric value according to above
  */
-int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag, char currentPlayer);
+int computeValueRec(SPFiarGame* src, int maxRecLvl, bool flag,char currentPlayer);
+
+/**
+ * an aux function that takes MAX between elems of flag is ture and MIN o/w.
+ * @param: value - the current MAX/MIN to compare with
+ * @param: curr - the candidate for MAX/MIN
+ * @param: flag - a boolean variable to decide if MAX actions needs to be taken or MIN
+ *
+ * @return:
+ *a numeric value according to the above.
+ */
 int decider(int value, int curr, bool flag);
-
-
 
 #endif
